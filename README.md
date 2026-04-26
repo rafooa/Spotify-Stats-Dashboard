@@ -1,6 +1,6 @@
-# Spotify Privacy-First Stats Web App
+# Spotify Streaming Stats Web App
 
-This project is now a static web app designed for GitHub Pages.
+This project is now a static web app called Spotify Streaming Stats, designed for GitHub Pages.
 
 Your Spotify data is processed only in the browser. No backend is required, no upload API exists, and no streaming history is sent to this repository or any server.
 

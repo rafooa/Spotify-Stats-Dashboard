@@ -1,15 +1,15 @@
 :root {
-  --bg: #f4f1eb;
-  --bg-accent: radial-gradient(circle at 15% 10%, #ffd8a8 0%, transparent 42%),
-    radial-gradient(circle at 90% 20%, #a5d8ff 0%, transparent 37%),
-    radial-gradient(circle at 80% 80%, #b2f2bb 0%, transparent 35%);
-  --ink: #1d1b16;
-  --muted: #5d5649;
-  --card: #fffdf8;
-  --line: #dfd6c7;
-  --brand: #136f63;
-  --brand-strong: #0b4f47;
-  --danger: #b23a48;
+  --bg: #090d14;
+  --bg-accent: radial-gradient(circle at 15% 10%, rgba(66, 43, 21, 0.6) 0%, transparent 44%),
+    radial-gradient(circle at 88% 18%, rgba(24, 70, 96, 0.55) 0%, transparent 42%),
+    radial-gradient(circle at 76% 84%, rgba(20, 82, 63, 0.5) 0%, transparent 40%);
+  --ink: #edf4ff;
+  --muted: #9fb2c8;
+  --card: #101823;
+  --line: #223146;
+  --brand: #1db954;
+  --brand-strong: #169346;
+  --danger: #ff7a8a;
 }
 
 * {
@@ -62,7 +62,7 @@ h1 {
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
-  box-shadow: 0 10px 24px rgba(29, 27, 22, 0.08);
+  box-shadow: 0 14px 30px rgba(2, 6, 14, 0.45);
 }
 
 .controls {
@@ -82,7 +82,7 @@ h1 {
 .dropzone {
   border: 2px dashed var(--brand);
   border-radius: 14px;
-  background: linear-gradient(140deg, #f8fffa, #f4fbff);
+  background: linear-gradient(140deg, #0f2634, #142033);
   padding: 1.2rem;
   display: flex;
   flex-direction: column;
@@ -146,7 +146,7 @@ button:hover {
 }
 
 button.ghost {
-  background: transparent;
+  background: #0c1320;
   border: 1px solid var(--line);
   color: var(--ink);
 }
@@ -229,6 +229,10 @@ td {
   text-align: left;
   border-bottom: 1px solid var(--line);
   padding: 0.45rem;
+}
+
+td {
+  color: #dce7f7;
 }
 
 th {
