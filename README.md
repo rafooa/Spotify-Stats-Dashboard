@@ -1,48 +1,81 @@
-# Spotify Extended Streaming History Analyzer + Dashboard
+# Spotify Privacy-First Stats Web App
 
-This project analyzes Spotify Extended Streaming History JSON exports and provides:
+This project is now a static web app designed for GitHub Pages.
 
-- CLI stats summary (`src/backend/spotistats.py`)
-- Streamlit dashboard (`src/frontend/streamlit_app.py`)
+Your Spotify data is processed only in the browser. No backend is required, no upload API exists, and no streaming history is sent to this repository or any server.
 
-## Project structure
+You can:
 
-```text
-Spotify Extended Streaming History/
-├── data/
-│   ├── outputs/
-│   │   └── spotify_stats_summary.json
-│   ├── reference/
-│   │   └── ReadMeFirst_ExtendedStreamingHistory.pdf
-│   └── streaming_history/
-│       └── Streaming_History_*.json
-├── src/
-│   ├── backend/
-│   │   └── spotistats.py
-│   └── frontend/
-│       └── streamlit_app.py
-├── requirements.txt
-└── README.md
+1. Use the hosted app from your GitHub Pages domain.
+2. Clone this repo and run it locally.
+3. Request your data from Spotify and drop the zip directly into the app.
+
+Spotify privacy export link:
+https://www.spotify.com/us/account/privacy/
+
+## Main app
+
+- Static client app: `docs/index.html`
+- App logic: `docs/app.js`
+- Styling: `docs/styles.css`
+
+The app accepts a Spotify export zip, extracts JSON files in-browser, and computes analytics on the client side.
+
+## Features
+
+- Drag-and-drop zip upload
+- File picker zip upload
+- Clipboard paste support for zip files
+- Fully client-side parsing of `Streaming_History*.json`
+- Key metrics, top artists/tracks/albums, top days, monthly activity, and offline vs online chart
+- Mobile-friendly responsive layout
+
+## Deploy on GitHub Pages (simplest)
+
+1. Push this repository to GitHub.
+2. Open repository Settings, then Pages.
+3. Under Build and deployment, set Source to Deploy from a branch.
+4. Choose branch `main` and folder `/docs`.
+5. Save.
+
+GitHub will publish the app at your Pages URL (typically `https://<username>.github.io/<repo>/`).
+
+## Run locally (no backend)
+
+From the project root:
+
+```bash
+python3 -m http.server 8000
 ```
 
-## Metrics included
+Then open:
 
-- Total streams (songs played longer than 10 seconds / 10,000 ms)
-- Number of minutes streamed
-- Hours streamed
-- Different artists
-- Different albums
-- Days streamed
-- Top 10 artists
-- Top 10 songs
-- Top 10 albums
-- Country ranking by counted streams
-- Offline vs online stream comparison
-- Day with the most counted streams
-- Top 10 days with the most counted streams (with stream counts)
-- Longest streak of consecutive streaming days
+```text
+http://localhost:8000/docs/
+```
 
-## Setup
+## How users can use their own data
+
+1. Request Spotify account data from: https://www.spotify.com/us/account/privacy/
+2. Download the zip when Spotify emails it.
+3. Open the web app.
+4. Drag the zip onto the drop area (or click to select it).
+5. View stats instantly in-browser.
+
+## Privacy model
+
+- Processing is done in JavaScript on the client side.
+- No custom API, database, or server is used by this app.
+- Input files are not persisted by the app after page refresh.
+
+## Legacy Python tools (still included)
+
+If someone wants local Python-based analysis, these remain available:
+
+- CLI analyzer: `src/backend/spotistats.py`
+- Streamlit dashboard: `src/frontend/streamlit_app.py`
+
+Install dependencies:
 
 ```bash
 python3 -m venv .venv
@@ -50,25 +83,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Run CLI summary
+Run CLI summary:
 
 ```bash
 python src/backend/spotistats.py
 ```
 
-This writes `spotify_stats_summary.json` to `data/outputs/` by default.
-
-## Run Streamlit dashboard
+Run Streamlit dashboard:
 
 ```bash
 streamlit run src/frontend/streamlit_app.py
 ```
-
-Then open the shown localhost URL (usually `http://localhost:8501`).
-
-## Notes
-
-- By default, the analyzer reads files from `data/streaming_history/`.
-- By default, it writes summary output to `data/outputs/spotify_stats_summary.json`.
-- It targets files matching `Streaming_History*.json`.
-- If none are found, it falls back to all `.json` files except `spotify_stats_summary.json`.

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spotify Privacy-First Stats</title>
+  <meta name="description" content="Analyze your Spotify Extended Streaming History locally in your browser.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Client-side Spotify analytics</p>
+      <h1>Spotify Privacy-First Stats</h1>
+      <p class="hero-copy">
+        Drop your Spotify account data zip and get insights instantly.
+        Nothing is uploaded and all processing stays in your browser.
+      </p>
+    </section>
+
+    <section class="controls card">
+      <div class="upload-wrap">
+        <label class="dropzone" id="dropzone" for="zipInput">
+          <input id="zipInput" type="file" accept=".zip,application/zip" aria-label="Upload Spotify zip file">
+          <span class="drop-title">Drop ZIP here or click to choose</span>
+          <span class="drop-subtitle">Supports Spotify Extended Streaming History exports</span>
+        </label>
+        <p class="privacy-note">Privacy: your data never leaves your device.</p>
+      </div>
+
+      <div class="settings-wrap">
+        <label for="topN">Top list size: <strong id="topNValue">10</strong></label>
+        <input id="topN" type="range" min="5" max="30" value="10" step="1">
+        <button id="analyzeButton" type="button">Analyze ZIP</button>
+        <button id="clearButton" type="button" class="ghost">Clear results</button>
+      </div>
+    </section>
+
+    <section id="status" class="status" role="status" aria-live="polite"></section>
+
+    <section id="results" class="results hidden">
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <div class="panel-grid">
+        <article class="card panel">
+          <h2>Top Artists</h2>
+          <div id="topArtistsTable"></div>
+        </article>
+        <article class="card panel">
+          <h2>Top Tracks</h2>
+          <div id="topTracksTable"></div>
+        </article>
+        <article class="card panel">
+          <h2>Top Albums</h2>
+          <div id="topAlbumsTable"></div>
+        </article>
+      </div>
+
+      <div class="panel-grid">
+        <article class="card panel">
+          <h2>Offline vs Online</h2>
+          <canvas id="offlineChart" height="220"></canvas>
+        </article>
+        <article class="card panel">
+          <h2>Streams by Month</h2>
+          <canvas id="monthlyChart" height="220"></canvas>
+        </article>
+      </div>
+
+      <div class="panel-grid">
+        <article class="card panel full">
+          <h2>Top Days by Streams</h2>
+          <div id="topDaysTable"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

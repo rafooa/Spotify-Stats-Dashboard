@@ -1,0 +1,261 @@
+:root {
+  --bg: #f4f1eb;
+  --bg-accent: radial-gradient(circle at 15% 10%, #ffd8a8 0%, transparent 42%),
+    radial-gradient(circle at 90% 20%, #a5d8ff 0%, transparent 37%),
+    radial-gradient(circle at 80% 80%, #b2f2bb 0%, transparent 35%);
+  --ink: #1d1b16;
+  --muted: #5d5649;
+  --card: #fffdf8;
+  --line: #dfd6c7;
+  --brand: #136f63;
+  --brand-strong: #0b4f47;
+  --danger: #b23a48;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  background-image: var(--bg-accent);
+  min-height: 100vh;
+}
+
+.page {
+  width: min(1100px, 92vw);
+  margin: 2rem auto 4rem;
+}
+
+.hero {
+  animation: rise 600ms ease-out;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+h1,
+h2 {
+  margin: 0;
+  line-height: 1.15;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+}
+
+.hero-copy {
+  margin-top: 0.8rem;
+  max-width: 66ch;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(29, 27, 22, 0.08);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1rem;
+  margin-top: 1.4rem;
+  padding: 1rem;
+  animation: rise 750ms ease-out;
+}
+
+.upload-wrap,
+.settings-wrap {
+  padding: 0.4rem;
+}
+
+.dropzone {
+  border: 2px dashed var(--brand);
+  border-radius: 14px;
+  background: linear-gradient(140deg, #f8fffa, #f4fbff);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.dropzone.drag-over {
+  border-color: var(--brand-strong);
+  transform: translateY(-2px);
+}
+
+.drop-title {
+  font-weight: 700;
+}
+
+.drop-subtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.dropzone input {
+  display: none;
+}
+
+.privacy-note {
+  margin: 0.7rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.settings-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+label {
+  font-weight: 500;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+button {
+  appearance: none;
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  background: var(--brand);
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--brand-strong);
+}
+
+button.ghost {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.status {
+  margin-top: 1rem;
+  min-height: 1.2rem;
+  color: var(--muted);
+}
+
+.status.error {
+  color: var(--danger);
+}
+
+.hidden {
+  display: none;
+}
+
+.results {
+  margin-top: 1rem;
+  animation: rise 700ms ease-out;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.kpi {
+  padding: 0.9rem;
+}
+
+.kpi .label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.kpi .value {
+  margin-top: 0.2rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.kpi .sub {
+  margin-top: 0.1rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.panel-grid {
+  margin-top: 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.panel {
+  padding: 0.9rem;
+}
+
+.panel.full {
+  grid-column: 1 / -1;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.84rem;
+}
+
+th,
+td {
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  padding: 0.45rem;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 860px) {
+  .controls,
+  .panel-grid,
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page {
+    width: 94vw;
+    margin-top: 1.3rem;
+  }
+}
