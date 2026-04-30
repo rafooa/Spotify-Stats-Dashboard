@@ -34,6 +34,26 @@
       <div class="settings-wrap">
         <label for="topN">Top list size: <strong id="topNValue">10</strong></label>
         <input id="topN" type="range" min="5" max="30" value="10" step="1">
+        <div class="filter-section">
+          <label for="filterMode">Filter months:</label>
+          <select id="filterMode">
+            <option value="all">All months</option>
+            <option value="select">Select months</option>
+            <option value="range">Range</option>
+          </select>
+
+          <div id="selectMonthsWrap" class="hidden">
+            <label for="monthsSelect">Choose months (multi-select):</label>
+            <select id="monthsSelect" multiple size="6"></select>
+          </div>
+
+          <div id="rangeWrap" class="hidden">
+            <label for="rangeStart">Start month:</label>
+            <input id="rangeStart" type="month">
+            <label for="rangeEnd">End month:</label>
+            <input id="rangeEnd" type="month">
+          </div>
+        </div>
         <button id="analyzeButton" type="button">Analyze ZIP</button>
         <button id="clearButton" type="button" class="ghost">Clear results</button>
       </div>
@@ -71,9 +91,13 @@
       </div>
 
       <div class="panel-grid">
-        <article class="card panel full">
+        <article class="card panel">
           <h2>Top Days by Streams</h2>
           <div id="topDaysTable"></div>
+        </article>
+        <article class="card panel">
+          <h2>Streams by Country</h2>
+          <div id="countriesTable"></div>
         </article>
       </div>
     </section>

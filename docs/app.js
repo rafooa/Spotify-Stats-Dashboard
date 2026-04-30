@@ -23,6 +23,13 @@ const elements = {
   topTracksTable: document.getElementById("topTracksTable"),
   topAlbumsTable: document.getElementById("topAlbumsTable"),
   topDaysTable: document.getElementById("topDaysTable"),
+  countriesTable: document.getElementById("countriesTable"),
+  filterMode: document.getElementById("filterMode"),
+  monthsSelect: document.getElementById("monthsSelect"),
+  selectMonthsWrap: document.getElementById("selectMonthsWrap"),
+  rangeWrap: document.getElementById("rangeWrap"),
+  rangeStart: document.getElementById("rangeStart"),
+  rangeEnd: document.getElementById("rangeEnd"),
 };
 
 function setStatus(message, isError = false) {
@@ -288,9 +295,17 @@ function renderTables(summary) {
     formatNumber(row.count),
   ]);
   createTable(elements.topDaysTable, ["#", "Day", "Streams"], topDaysRows);
+
+  // Countries table
+  const countriesRows = summary.breakdown.countries_full_ranking.map((row, idx) => [
+    idx + 1,
+    row.name,
+    formatNumber(row.count),
+  ]);
+  createTable(elements.countriesTable, ["#", "Country", "Streams"], countriesRows);
 }
 
-function analyzeRows(rows, topCount) {
+function analyzeRows(rows, topCount, monthsFilter = null) {
   const files = {
     json_files_found: 0,
     files_processed: 0,
@@ -328,6 +343,15 @@ function analyzeRows(rows, topCount) {
   let onlineStreams = 0;
 
   rows.forEach((row) => {
+    // If filtering by months, determine monthKey first and skip rows outside selection
+    const ts = parseTimestamp(row.ts);
+    const monthKey = ts ? ts.toISOString().slice(0, 7) : null;
+    if (monthsFilter && monthsFilter.length) {
+      if (!monthKey || !monthsFilter.includes(monthKey)) {
+        return; // skip this row entirely when filtering
+      }
+    }
+
     entries.entries_processed += 1;
 
     const msPlayed = Number(row.ms_played || 0);
@@ -344,7 +368,6 @@ function analyzeRows(rows, topCount) {
     entries.qualified_song_streams += 1;
     totalMs += msPlayed;
 
-    const ts = parseTimestamp(row.ts);
     if (ts) {
       if (!firstTs || ts < firstTs) firstTs = ts;
       if (!lastTs || ts > lastTs) lastTs = ts;
@@ -504,6 +527,23 @@ async function runAnalysis() {
       state.zipFile
     );
 
+    // keep rows in state so the user can change filters without re-uploading
+    state.currentRows = rows;
+
+    // build month options
+    const monthSet = new Set();
+    rows.forEach((r) => {
+      const ts = parseTimestamp(r.ts);
+      if (ts) monthSet.add(ts.toISOString().slice(0, 7));
+    });
+    const months = [...monthSet].sort();
+    elements.monthsSelect.innerHTML = months
+      .map((m) => `<option value="${m}">${m}</option>`)
+      .join("");
+    // clear range inputs
+    elements.rangeStart.value = "";
+    elements.rangeEnd.value = "";
+
     if (!rows.length) {
       throw new Error("No stream entries could be read from JSON files in the ZIP.");
     }
@@ -524,6 +564,59 @@ async function runAnalysis() {
   } catch (error) {
     setStatus(`Error: ${error.message}`, true);
   }
+}
+
+function buildMonthsBetween(start, end) {
+  // start/end format: YYYY-MM
+  const [sY, sM] = start.split("-").map(Number);
+  const [eY, eM] = end.split("-").map(Number);
+  const months = [];
+  let y = sY;
+  let m = sM;
+  while (y < eY || (y === eY && m <= eM)) {
+    months.push(`${y.toString().padStart(4, "0")}-${m.toString().padStart(2, "0")}`);
+    m += 1;
+    if (m > 12) {
+      m = 1;
+      y += 1;
+    }
+  }
+  return months;
+}
+
+function getMonthsFilterFromUI() {
+  const mode = elements.filterMode ? elements.filterMode.value : "all";
+  if (mode === "all") return null;
+  if (mode === "select") {
+    const selected = [...elements.monthsSelect.options]
+      .filter((o) => o.selected)
+      .map((o) => o.value);
+    return selected.length ? selected : null;
+  }
+  if (mode === "range") {
+    const start = elements.rangeStart.value;
+    const end = elements.rangeEnd.value;
+    if (!start || !end) return null;
+    return buildMonthsBetween(start, end);
+  }
+  return null;
+}
+
+function performAnalysis() {
+  if (!state.currentRows) return runAnalysis();
+  const monthsFilter = getMonthsFilterFromUI();
+  const summary = analyzeRows(state.currentRows, state.topN, monthsFilter);
+  // fill files info heuristically
+  summary.files.json_files_found = state.currentRows ? 1 : 0;
+  summary.files.files_processed = 1;
+  renderKpis(summary);
+  renderTables(summary);
+  renderCharts(summary);
+  elements.results.classList.remove("hidden");
+  setStatus(
+    `Done. Processed ${formatNumber(summary.entries.entries_processed)} entries` +
+      (monthsFilter ? ` (filtered ${monthsFilter.length} month(s))` : "")
+  );
 }
 
 function clearResults() {
@@ -551,7 +644,13 @@ function bindEvents() {
     }
   });
 
-  elements.analyzeButton.addEventListener("click", runAnalysis);
+  elements.analyzeButton.addEventListener("click", () => {
+    // If rows already loaded, perform analysis with current filters; otherwise run full extraction
+    if (state.currentRows) performAnalysis();
+    else runAnalysis();
+  });
+  // If rows already loaded, perform analysis with current filters
+  // (analyzeButton will call runAnalysis which re-reads; to re-run quickly call performAnalysis)
   elements.clearButton.addEventListener("click", clearResults);
 
   ["dragenter", "dragover"].forEach((eventName) => {
@@ -577,6 +676,13 @@ function bindEvents() {
     }
     state.zipFile = file;
     setStatus(`Selected: ${state.zipFile.name}`);
+  });
+
+  // Filter UI handling
+  elements.filterMode.addEventListener("change", (e) => {
+    const mode = e.target.value;
+    elements.selectMonthsWrap.classList.toggle("hidden", mode !== "select");
+    elements.rangeWrap.classList.toggle("hidden", mode !== "range");
   });
 
   document.addEventListener("paste", (event) => {

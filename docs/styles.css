@@ -121,6 +121,29 @@ h1 {
   gap: 0.75rem;
 }
 
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+select[multiple] {
+  min-width: 220px;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  padding: 0.35rem;
+  border-radius: 8px;
+}
+
+input[type="month"] {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 0.35rem;
+  border-radius: 8px;
+}
+
 label {
   font-weight: 500;
 }
