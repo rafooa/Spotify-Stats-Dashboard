@@ -30,6 +30,7 @@ const elements = {
   rangeWrap: document.getElementById("rangeWrap"),
   rangeStart: document.getElementById("rangeStart"),
   rangeEnd: document.getElementById("rangeEnd"),
+  geoChart: document.getElementById("geoChart"),
 };
 
 function setStatus(message, isError = false) {
@@ -265,6 +266,47 @@ function renderCharts(summary) {
       },
     },
   });
+
+  // render geo chart if available
+  renderGeoChart(summary);
+}
+
+function renderGeoChart(summary) {
+  if (!elements.geoChart) return;
+  const countries = summary.breakdown.countries_full_ranking || [];
+
+  // Ensure Google Charts loaded
+  if (window.google && google.charts && google.visualization) {
+    try {
+      const dataArray = [["Country", "Streams"]];
+      countries.forEach((r) => {
+        // Prefer ISO alpha-2 codes if present, otherwise pass name
+        dataArray.push([r.name, Number(r.count)]);
+      });
+
+      const dataTable = google.visualization.arrayToDataTable(dataArray);
+      const options = {
+        colorAxis: { colors: ["#e6f7ef", "#1db954"] },
+        backgroundColor: { fill: "transparent" },
+        datalessRegionColor: "#0f1720",
+        defaultColor: "#0b3b2f",
+      };
+
+      const chart = new google.visualization.GeoChart(elements.geoChart);
+      chart.draw(dataTable, options);
+    } catch (err) {
+      console.warn("GeoChart render failed:", err);
+      elements.geoChart.textContent = "Map unavailable in this browser.";
+    }
+  } else {
+    // Load Google Charts and render when ready
+    if (window.google && google.charts) {
+      google.charts.load("current", { packages: ["geochart"] });
+      google.charts.setOnLoadCallback(() => renderGeoChart(summary));
+    } else {
+      elements.geoChart.textContent = "Map loader not available.";
+    }
+  }
 }
 
 function renderTables(summary) {
